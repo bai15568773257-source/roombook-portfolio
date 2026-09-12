@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">RoomBook calendar icon</title>
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="#165e68"/>
+  <rect x="15" y="18" width="34" height="31" rx="5" fill="none" stroke="#fff" stroke-width="3"/>
+  <path d="M15 28h34M23 14v9M41 14v9" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="m25 38 5 5 10-10" fill="none" stroke="#a9e4bc" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

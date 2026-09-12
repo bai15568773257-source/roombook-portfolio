@@ -39,7 +39,7 @@ BANNER = """
 </style>
 <aside id="portfolio-demo-banner" role="note" aria-label="デモの説明">
   <strong>DEMO</strong>
-  <span>架空データの画面プレビュー・閲覧専用｜保存・変更・送信はできません。</span>
+  <span>一般ユーザーの画面プレビュー・架空データ・閲覧専用｜保存・変更・送信はできません。</span>
 </aside>
 """
 
@@ -205,11 +205,14 @@ class PreviewHandler(BaseHTTPRequestHandler):
         self.respond(200, content, content_type)
 
     def api_get(self, path, query):
+        if path.startswith("/api/admin/"):
+            self.respond(403, {"detail": "このプレビューは一般ユーザー専用です。"})
+            return
         users = FIXTURES["users"]
         routes = {
             "/api/health": {"ok": True, "timezone": "Asia/Tokyo", "demo": True},
             "/api/version": {"version": expected_api_version(), "demo": True},
-            "/api/auth/me": {"user": users[0]},
+            "/api/auth/me": {"user": users[1]},
             "/api/rooms": FIXTURES["rooms"],
             "/api/users/directory": [{key: user[key] for key in ("id", "email", "name")} for user in users],
             "/api/admin/users": users,

@@ -1,0 +1,74 @@
+services:
+  meeting-ui:
+    image: nginx:1.27-alpine
+    container_name: meeting-ui
+    restart: unless-stopped
+    depends_on:
+      - meeting-api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+      - ./site/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - meeting-net
+
+  meeting-api:
+    build:
+      context: ./app
+    container_name: meeting-api
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    volumes:
+      - ./reports:/data/reports
+    depends_on:
+      meeting-db:
+        condition: service_healthy
+    networks:
+      - meeting-net
+
+  meeting-db:
+    image: mariadb:11.4
+    container_name: meeting-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Tokyo
+    volumes:
+      - meeting-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - meeting-net
+
+  # MRBS is kept only as an optional internal reference.
+  # It is not the employee entry point and has no LAN port mapping.
+  # Start it only if you really need it: docker compose --profile mrbs up -d
+  meeting-mrbs:
+    image: mrbs/mrbs:latest
+    container_name: meeting-mrbs
+    restart: unless-stopped
+    profiles:
+      - mrbs
+    depends_on:
+      meeting-db:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Tokyo
+    networks:
+      - meeting-net
+
+volumes:
+  meeting-data:
+
+networks:
+  meeting-net:
+    driver: bridge

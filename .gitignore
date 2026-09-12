@@ -1,0 +1,40 @@
+# Real configuration and credentials
+.env
+.env.*
+!.env.example
+env
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Database files, backups, exported reports, employee uploads and logs
+reports/
+backup/
+backups/
+data/
+uploads/
+*.sql
+*.sql.gz
+*.dump
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.csv
+*.xlsx
+*.zip
+*.tar
+*.tar.gz
+FULL_CONTENTS.md
+
+# Local runtime and editor files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+.pytest_cache/
+.DS_Store
+.idea/
+.vscode/
